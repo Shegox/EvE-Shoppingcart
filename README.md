@@ -12,6 +12,8 @@ You can use it to import list of items in the format:
 
 And the script will then push these data to a capsule with the given name in your fitting area and allowes you to use the Buy-all option on these to buy your whole shoppingcart at once.
 
+Productive can be found here: https://www.eve-shoppingcart.ovh/
+
 # Setup
 
 You need a database with the needed itemname<->itemid table (invTypes) and mysql and apache2.
