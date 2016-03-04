@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Shopping Cart</title>
+<style>
+
+      #__page0-cont{ padding-left : 15px }
+
+    </style>
+
+<script id="sap-ui-bootstrap" type="text/javascript"
+	src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js"
+	data-sap-ui-theme="sap_bluecrystal"
+	data-sap-ui-xx-bindingSyntax="complex"
+	data-sap-ui-libs="sap.m,sap.ui.commons"
+	data-sap-ui-resourceroots='{
+            "MCS": "./"
+        }'>        >
+    </script>
+<script>
+
+var auth_code = "";
+auth_code = location.hash.replace("#access_token=", "");
+
+auth_code = auth_code.replace("&token_type=Bearer&expires_in=1200","");
+
+
+	
+	console.log(auth_code);
+	
+	var app = new sap.m.App();
+	var page1 = new sap.m.Page({
+	title : "Shopping Cart for EVE",
+	headerContent :[
+	                new sap.m.Button({
+	                	text: "Login to EvE SSO",
+	                
+	               
+		press: function()
+		{
+		window.open("https://login.eveonline.com/oauth/authorize?response_type=token&redirect_uri=https://www.eve-shoppingcart.ovh/&client_id=59ed096590a5474fa71ae8249a865870&scope=characterFittingsWrite","_self");
+		}
+		
+	}) 
+	                ]
+	
+	});
+	app.addPage(page1);
+	app.placeAt("root");
+
+	
+
+	var add_Button = new sap.m.Button({
+		text: "Add Cart to Fittings",
+		press: function(){
+			
+			var name = name_Input.getValue();
+			var items = items_Input.getValue();
+			if(auth_code == "")
+				{jQuery.sap.require("sap.m.MessageBox");
+				sap.m.MessageBox.error("Plese log in though the EVE SSO");
+				
+				}
+			else if (name == "")
+			{
+				jQuery.sap.require("sap.m.MessageBox");
+				sap.m.MessageBox.error("Plese enter a name for teh shopping list (displayed as capsule fitting)");
+			}
+			else if (items == "")
+			{
+				jQuery.sap.require("sap.m.MessageBox");
+				sap.m.MessageBox.error("Please enter items");
+			}
+			else
+				{
+			items = items.split('\n');
+			endItems = new Array();
+			for (i = 0; i < items.length; i++)
+				{
+					console.log(items[i]);
+if (items[i] != "")
+{
+				var parts =  items[i].split("\t");						
+					endItems[i] = new Array();
+					
+					endItems[i][0] = parts[1];
+					endItems[i][1] = parts[0].replace(",","");		
+					endItems[i] = JSON.stringify(endItems[i]);
+}
+					
+				}	
+			
+					console.log(endItems);
+			$.ajax({
+				url : "ShoppingCart.php",
+				type : "POST",				
+				data : {
+					"auth_code" : auth_code,
+					"name" : name,
+					"items" : endItems
+							
+				},
+				beforeSend : function(){ 
+				//dialog.open();				
+				},
+				success : function handleSucess(response) {
+				
+				//dialog.close();
+					jQuery.sap.require("sap.m.MessageBox");
+					sap.m.MessageBox.information(response);					
+				},
+				error : function(xhr, textStatus, errorThrown) {
+					
+				}
+				
+			})
+			
+			console.log(endItems);
+			console.log(name);
+			console.log(items);
+			
+			
+		}
+		}
+	});
+	var h=  new sap.ui.layout.VerticalLayout();
+	var h1 =  new sap.ui.layout.VerticalLayout();
+	var name_Label = new sap.m.Label({design: sap.m.LabelDesign.Bold ,text: "Name of Shopping Cart" });
+	var name_Input = new sap.m.Input("Name",{maxLength: 40, fieldWidth: "20%"});	
+	var h2 =  new sap.ui.layout.VerticalLayout();
+	
+	var items_Label = new sap.m.Label({design: sap.m.LabelDesign.Bold ,text: "Items" });
+	var items_Input = sap.m.TextArea  ("Items",{rows:50,cols:40});
+
+	h.addContent(add_Button);
+	
+	h1.addContent(name_Label);
+	h1.addContent(name_Input);
+	h.addContent(h1);
+	
+	h2.addContent(items_Label);
+	h2.addContent(items_Input);
+	h.addContent(h2);
+	page1.addContent(h);
+	page1.addContent(new sap.m.Text({
+		text : "1. First Login though the EVE-SSO. \n 2. Then copy and paste data from an spreadsheet into the item section \n 3. Enter a name \n 4. Press the button \n The items must be in the form:\n <Quantity>TAB<Name>\n <Quantity>TAB<Name>\n .....\n The maxmimum of items is 99 \n Tutorial: http://imgur.com/a/YawTp \n If you have question or want to donate send a mail to Shegox Gabriel ingame"
+	}));
+		
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+<body class="sapUiBody" id="root">
+</html>
