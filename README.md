@@ -8,7 +8,7 @@ You can use it to import list of items in the format:
 
 "Quantity"TAB"Name"
 
-"Quantity>TAB"Name"
+"Quantity"TAB"Name"
 
 And the script will then push these data to a capsule with the given name in your fitting area and allowes you to use the Buy-all option on these to buy your whole shoppingcart at once.
 
