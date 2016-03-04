@@ -20,6 +20,7 @@ You need a database with the needed itemname<->itemid table (invTypes) and mysql
 Also is needed that you have php5-mysqlnd and php5-curl installed.
 
 You can setup the database though the sql.php file and thats it. 
+You need to edit the login link found in the index.html to match your server and crest application.
 
 That's it!
 
